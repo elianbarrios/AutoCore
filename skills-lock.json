@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "avalonia": {
+      "source": "linuxdevel/avalonia-skills",
+      "sourceType": "github",
+      "skillPath": "skills/avalonia/SKILL.md",
+      "computedHash": "91fc70257caa7d2a8f65d12236479aae1a65215143a8de2c3e9cd2d087682f0c"
+    },
+    "code-testing": {
+      "source": "dotnet/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-test/skills/code-testing/SKILL.md",
+      "computedHash": "2ca3c087777e941385f96f1a234ba77dff916a73fb2cc139f40b84c47491b5ec"
+    },
+    "csharp-expert": {
+      "source": "dotnet/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/csharp-expert/SKILL.md",
+      "computedHash": "bae4d2d70956eb574068a5bf9fe7b64f8d2edbe2d314fce4603f5970331b13e5"
+    },
+    "csharp-refactoring": {
+      "source": "dotnet/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/csharp-refactoring/SKILL.md",
+      "computedHash": "73f7132c66ddb8d26572c402eae7c50d893ee299017920847b39b782fbc94b56"
+    },
+    "msbuild": {
+      "source": "dotnet/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet/skills/msbuild/SKILL.md",
+      "computedHash": "875990cbb7a1f4ee87c0f639bb98840f3892e7109d19bd4e211d4ff644aa6ae3"
+    },
+    "optimizing-ef-core-queries": {
+      "source": "dotnet/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/dotnet-data/skills/optimizing-ef-core-queries/SKILL.md",
+      "computedHash": "dd194024f92478a5c74c2690fc7bee08ba8a553acd7056e86050c677c2c767aa"
+    }
+  }
+}
