@@ -11,14 +11,14 @@ Single-project Avalonia 12 desktop app on .NET 10 (`AutoCore/AutoCore.csproj`), 
 
 ## Local database
 
-- `docker-compose.yaml` runs `postgres:18` as container `autocore-db` with `restart: on-failure`, published on host port 5432 (`"5432:5432"`, all interfaces), with `POSTGRES_PASSWORD`/`POSTGRES_DB` read from the repo-root `.env` that Compose auto-loads. Data persists in the named volume `autocore_data`.
-- `restart: on-failure` only revives the container after a non-zero exit; `docker compose stop` / `down` leaves it stopped, so a local DB that "won't come back" usually just needs `docker compose up -d`. Because the port is bound on all interfaces, anything on the LAN can reach this dev database — restrict the mapping to `127.0.0.1:5432:5432` if that matters.
+- `docker-compose.yaml` runs `postgres:18` as container `autocore-db` with `restart: unless-stopped`, published on host port 5432 (`"5432:5432"`, all interfaces), with `POSTGRES_PASSWORD`/`POSTGRES_DB` read from the repo-root `.env` that Compose auto-loads. Data persists in the named volume `data` (Docker-side name `autocore_data`, from the project prefix).
+- `restart: unless-stopped` brings the container back after a crash and after a Docker daemon or host reboot, but respects an explicit `docker compose stop` / `down`. Because the port is bound on all interfaces, anything on the LAN can reach this dev database — restrict the mapping to `127.0.0.1:5432:5432` if that matters.
 - `setup-local-db-environment.sh` is the one-time bootstrap: it generates a random password (via `openssl`), writes `.env` (`DB_NAME=autocore`, `DB_PASSWORD=...`), and stores the matching connection string as the user secret `ConnectionStrings:DefaultConnection` in `AutoCore/` (`UserSecretsId` is already in `AutoCore.csproj`).
 - First run: `./setup-local-db-environment.sh` then `docker compose up -d`.
 - Connection string shape: `Host=127.0.0.1;Port=5432;Database=autocore;Username=postgres;Password=<from .env>;`.
 - `.env` is gitignored. Each script run generates a fresh password, which only takes effect in `initdb` on an empty data directory — after re-running the script against an existing volume, recreate the database with `docker compose down -v` or connections will be rejected.
 - No data-access package (Npgsql/EF Core) or DB code exists yet — nothing reads `ConnectionStrings:DefaultConnection` today. Add the provider before wiring a `DbContext`.
-- `autocore_data` is mounted at the `postgres:18` `PGDATA` path, `/var/lib/postgresql/18/docker`, so the database survives `docker compose down` / `up`. The path is major-version specific: bumping the image to `postgres:19` needs a fresh volume or an explicit `pg_upgrade`/dump-restore (mounting the parent `/var/lib/postgresql` instead would allow the faster `--link` upgrade path).
+- The volume mounts at `/var/lib/postgresql`, the parent of the versioned `PGDATA` (`/var/lib/postgresql/18/docker` for `postgres:18`) rather than at `PGDATA` itself. That is the image's recommended layout and keeps `pg_upgrade --link` available when moving to a new major version; it also means the same volume keeps working across `postgres:19` without a path change.
 - Inspect the DB with `docker compose exec db psql -U postgres -d autocore`; open a shell with `docker compose exec db bash`. `docker compose down` stops it, `docker compose down -v` also deletes the data volume.
 
 ## Wiring
